@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "nacos.fullname" . }}
+  labels:
+    app: {{ template "nacos.name" . }}
+    chart: {{ template "nacos.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+    {{- end }}
+data:
+{{- if not .Values.mysql.enabled }}
+{{ toYaml .Values.mysql.external | indent 2 }}
+{{- else }}
+    mysql.master.host: {{ include "nacos.mysql.master.service.fullname" . }}
+    mysql.master.db.name: {{ .Values.mysql.db.name }}
+    mysql.master.port: "3306"
+    mysql.master.user: {{ .Values.mysql.db.user }}
+    mysql.master.password: {{ .Values.mysql.db.password }}
+    mysql.slave.host: {{ include "nacos.mysql.slave.service.fullname" . }}
+    mysql.slave.port: "3306"
+{{- end }}
+{{- if .Values.config.enabled -}}
+{{ toYaml .Values.config.data | indent 2 }}
+{{- end -}}
