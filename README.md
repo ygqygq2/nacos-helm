@@ -60,5 +60,5 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ## Persistence
 
-The [nacos image](https://github.com/nacos-group/nacos-docker) stores the data and configurations at the `/data` path of the container.
+The [nacos image](https://github.com/nacos-group/nacos-docker) stores the data and configurations at the `/home/nacos/{plugins,data,logs}` path of the container.
 
