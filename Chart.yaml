@@ -1,9 +1,9 @@
 apiVersion: v1
-appVersion: 1.0.0
+appVersion: 1.0.1
 description: Chart for nacos, an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
 engine: gotpl
 name: nacos
-version: 1.0.0
+version: 1.0.1
 home: https://nacos.io
 icon: https://nacos.io/img/nacos_colorful.png
 keywords:
