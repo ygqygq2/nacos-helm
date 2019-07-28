@@ -15,9 +15,9 @@ metadata:
 {{- if .Values.labels }}
 {{ toYaml .Values.labels | indent 4 }}
 {{- end }}
-{{- if .Values.deployment.annotations }}
+{{- if .Values.annotations }}
   annotations:
-{{ toYaml .Values.deployment.annotations | indent 4 }}
+{{ toYaml .Values.annotations | indent 4 }}
 {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -38,16 +38,16 @@ spec:
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
-{{- if .Values.metrics.podAnnotations.enabled }}
+{{- if .Values.metrics.podAnnotations }}
 {{ toYaml .Values.metrics.podAnnotations | indent 8 }}
 {{- end }}
       labels:
         app: {{ template "nacos.name" . }}
         release: {{ .Release.Name }}
     spec:
-      {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.image.imagePullSecrets }}
+      {{- range .Values.image.imagePullSecrets }}
+        - name: {{ . }}
       {{- end }}
       initContainers:
       - name: peer-finder-plugin-install
@@ -65,29 +65,29 @@ spec:
         env: 
           - name: MYSQL_HOST
             valueFrom:
-              configMapKeyRef:
+              secretKeyRef:
                 name: {{ template "nacos.fullname" . }}
-                key: mysql.master.host
+                key: mysqlMasterHost
           - name: MYSQL_DB
             valueFrom:
-              configMapKeyRef:
+              secretKeyRef:
                 name: {{ template "nacos.fullname" . }}
-                key: mysql.master.db.name
+                key: mysqlDatabase
           - name: MYSQL_PORT
             valueFrom:
-              configMapKeyRef:
+              secretKeyRef:
                 name: {{ template "nacos.fullname" . }}
-                key: mysql.master.port
+                key: mysqlMasterPort
           - name: MYSQL_USER
             valueFrom:
-              configMapKeyRef:
+              secretKeyRef:
                 name: {{ template "nacos.fullname" . }}
-                key: mysql.master.user
+                key: mysqlMasterUser
           - name: MYSQL_PASSWD
             valueFrom:
-              configMapKeyRef:
+              secretKeyRef:
                 name: {{ template "nacos.fullname" . }}
-                key: mysql.master.password
+                key: mysqlMasterPassword
       {{- if .Values.initContainers }}
 {{ toYaml .Values.initContainers | indent 6 }}
       {{- end }}
@@ -124,11 +124,9 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.deployment.postStart.command }}
+          {{- if .Values.lifecycle }}
           lifecycle:
-            postStart:
-              exec:
-                command: {{ .Values.postStart.command }}
+{{ toYaml .Values.lifecycle | indent 12 }}
           {{- end }}
           {{- if .Values.startCommand }}
           command:
@@ -146,39 +144,39 @@ spec:
                   fieldPath: metadata.namespace
             - name: MYSQL_MASTER_SERVICE_HOST
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
-                  key: mysql.master.host
+                  key: mysqlMasterHost
             - name: MYSQL_MASTER_SERVICE_DB_NAME
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
-                  key: mysql.master.db.name
+                  key: mysqlDatabase
             - name: MYSQL_MASTER_SERVICE_PORT
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
-                  key: mysql.master.port
+                  key: mysqlMasterPort
             - name: MYSQL_SLAVE_SERVICE_HOST
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
-                  key: mysql.slave.host
+                  key: mysqlSlaveHost
             - name: MYSQL_SLAVE_SERVICE_PORT
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
-                  key: mysql.slave.port
+                  key: mysqlSlavePort
             - name: MYSQL_MASTER_SERVICE_USER
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
-                  key: mysql.master.user
+                  key: mysqlMasterUser
             - name: MYSQL_MASTER_SERVICE_PASSWORD
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
-                  key: mysql.master.password
+                  key: mysqlMasterPassword
 {{ toYaml .Values.env | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -225,8 +223,8 @@ spec:
               readOnly: {{ .Values.secret.readOnly }}
             {{- end }}
 {{ toYaml .Values.persistentVolume.mountPaths | indent 12 }}
-        {{- if .Values.deployment.additionalContainers }}
-{{ toYaml .Values.deployment.additionalContainers | indent 8 }}
+        {{- if .Values.additionalContainers }}
+{{ toYaml .Values.additionalContainers | indent 8 }}
         {{- end }}
       volumes:
         {{- if .Values.config.enabled }}
@@ -279,7 +277,7 @@ spec:
             {{- end }}
           {{- end }}
   {{- else }}
-      - name: data-storage
-        emptyDir: {}
+        - name: data-storage
+          emptyDir: {}
   {{- end }}
 {{- end -}}

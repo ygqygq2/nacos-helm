@@ -4,6 +4,13 @@
 
 statefulset:
   enabled: true
+## String to partially override fullname template (will maintain the release name)
+##
+nameOverride: ""
+
+## String to fully override fullname template
+##
+fullnameOverride: ""
 
 ## By default deploymentStrategy is set to rollingUpdate with maxSurge of 25% and maxUnavailable of 25% .
 ## You can change type to `Recreate` or can uncomment `rollingUpdate` specification and adjust them to your usage.
@@ -21,7 +28,7 @@ image:
   repository: nacos/nacos-server
   tag: 1.1.0
   pullPolicy: IfNotPresent # IfNotPresent: 有则不拉（减少流量和操作步骤），Always: 不管tag总拉（适合tag不变时更新）
-  imagePullSecrets: {}   # 如果需要docker仓库验证
+  imagePullSecrets: []
 
 service:
   type: ClusterIP  # 一般不用修改
@@ -29,10 +36,7 @@ service:
     web:  # 多端口暴露时，复制一段，ingress默认只暴露此名为web的端口
       port: 8848  # Service port number for client-a port.
       protocol: TCP  # Service port protocol for client-a port.
-#    ssh:
-#      port: 22  # Service port number for client-b port.
-#      protocol: TCP  # Service port protocol for client-b port.
-#
+
 ## env set
 ## ref: https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
 env: 
@@ -54,14 +58,14 @@ startCommand: []
 config:
   enabled: false
   mountPath: /conf
-  data: 
+  data: {} 
 
 ## To use an additional secret, set enable to true and add data
 secret:
   enabled: false
   mountPath: /etc/secret-volume
   readOnly: true
-  data: 
+  data: {}
 
 ## liveness and readiness 
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
@@ -98,20 +102,21 @@ podAnnotations:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+annotations: {}
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistentVolume:   # 是否存储持久化
-  enabled: true
+  enabled: false
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
   ##   set, choosing the default provisioner.  (gp2 on AWS, azure-disk on
   ##   Azure, standard on GKE, AWS & OpenStack)
   ##
-  storageClass: "cephfs"  # 可选，ceph-rbd（默认）和cephfs（可多pod共享存储）
-  accessMode: ReadWriteMany
+  storageClass: "-"
+  accessMode: ReadWriteOnce
   annotations: {}
     # helm.sh/resource-policy: keep
   size: 5Gi  # 大小
@@ -145,15 +150,15 @@ mysql:
   # init containers will import the flow sql file into mysql db.
   # https://raw.githubusercontent.com/alibaba/nacos/${version}/distribution/conf/schema.sql
   # https://raw.githubusercontent.com/alibaba/nacos/${version}/distribution/conf/nacos-mysql.sql
-  enabled: false
+  enabled: true
   external:
-    mysql.master.host: "mysql_master_host"
-    mysql.master.db.name: "nacos"
-    mysql.master.port: "3306"
-    mysql.master.user: "nacos"
-    mysql.master.password: "nacos"
-    mysql.slave.host: "mysql_slave_host"
-    mysql.slave.port: "3306"
+    mysqlMasterHost: "mysql_master_host"
+    mysqlDatabase: "nacos"
+    mysqlMasterPort: "3306"
+    mysqlMasterUser: "nacos"
+    mysqlMasterPassword: "nacos"
+    mysqlSlaveHost: "mysql_slave_host"
+    mysqlSlavePort: "3306"
 
   root:
     password: nacos
@@ -173,10 +178,10 @@ mysql:
   
   master:
     persistence:
-      enabled: true
-      storageClass: "ceph-rbd"
+      enabled: false
+      storageClass: "-"
       mountPath: /bitnami/mysql
-      annotations:
+      annotations: {}
       accessModes:
       - ReadWriteOnce
       size: 8Gi
@@ -221,10 +226,10 @@ mysql:
   slave:
     replicas: 1
     persistence:
-      enabled: true
-      storageClass: "ceph-rbd"
+      enabled: false
+      storageClass: "-"
       mountPath: /bitnami/mysql
-      annotations:
+      annotations: {}
       accessModes:
       - ReadWriteOnce
       size: 8Gi
@@ -278,45 +283,59 @@ mysql:
       prometheus.io/scrape: "true"
       prometheus.io/port: "9104"
 
-## Add init containers. e.g. to be used to give specific permissions for data
-## Add your own init container or uncomment and modify the given example.
-initContainers: []
+## Uncomment and modify this to run a command after starting the core container.
+## ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+lifecycle: {}
+  # preStop:
+  #   exec:
+  #     command: ["/bin/bash","/pre-stop.sh"]
+  # postStart:
+  #   exec:
+  #     command: ["/bin/bash","/post-start.sh"]
 
 deployment:
-## Add annotations in deployment to enhance deployment configurations
-  annotations: {}
-  postStart:
-    command:    # '["/bin/sh", "-c", "ls"]'
-  additionalContainers: 
-  additionalVolumes: 
+  additionalVolumes: []
+
+## init containers
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+## Add init containers. e.g. to be used to give specific permissions for data
+## Add your own init container or uncomment and modify the given example.
+initContainers: {}
+#  - name: fmp-volume-permission
+#    image: busybox
+#    imagePullPolicy: IfNotPresent
+#    command: ['chown','-R', '200', '/extra-data']
+#    volumeMounts:
+#      - name: extra-data
+#        mountPath: /extra-data
+
 
 ## Prometheus Exporter / Metrics
 ##
 metrics:
   enabled: false
-  image:
-    registry: docker.io
-    repository: nginx/nginx-prometheus-exporter
-    tag: 0.1.0
-    pullPolicy: IfNotPresent
-    ## Optionally specify an array of imagePullSecrets.
-    ## Secrets must be manually created in the namespace.
-    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-    ##
-    # pullSecrets:
-    #   - myRegistrKeySecretName
-  ## Metrics exporter pod Annotation and Labels
-  podAnnotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9113"
-    ## Metrics exporter resource requests and limits
-    ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-    ##
-  # resources: {}
+#   image:
+#     registry: docker.io
+#     repository: 
+#     tag: 
+#     pullPolicy: IfNotPresent
+#     ## Optionally specify an array of imagePullSecrets.
+#     ## Secrets must be manually created in the namespace.
+#     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+#     ##
+#     # pullSecrets:
+#     #   - myRegistrKeySecretName
+#   ## Metrics exporter pod Annotation and Labels
+  podAnnotations: {}
+#     prometheus.io/scrape: "true"
+#     prometheus.io/port: "9113"
+#     ## Metrics exporter resource requests and limits
+#     ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+#     ##
+#   # resources: {}
 
-extraContainers: {}
-  ## Additional containers to be added to the controller pod.
-  ## See https://github.com/lemonldap-ng-controller/lemonldap-ng-controller as example.
+additionalContainers: {}
+## Additional containers to be added to the core pod.
 #  - name: my-sidecar
 #    image: nginx:latest
 #  - name: lemonldap-ng-controller

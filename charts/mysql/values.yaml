@@ -2,10 +2,13 @@
 ## Please, note that this will override the image parameters, including dependencies, configured to use the global value
 ## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
-# global:
+global: {}
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+
+nameOverride: ""
+fullnameOverride: ""
 
 ## Bitnami MySQL image
 ## ref: https://hub.docker.com/r/bitnami/mysql/tags/
@@ -23,7 +26,7 @@ image:
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
-  # pullSecrets:
+  pullSecrets: []
   #   - myRegistryKeySecretName
 
 service:
@@ -46,7 +49,7 @@ root:
   ##
   password:
   ## Use existing secret (ignores root, db and replication passwords)
-  # existingSecret:
+  existingSecret: ""
   ##
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
@@ -97,6 +100,8 @@ master:
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
+  annotations: {}
+  lifecycle: {}
   persistence:
     ## If true, use a Persistent Volume Claim, If false, use emptyDir
     ##
@@ -104,7 +109,7 @@ master:
     mountPath: /bitnami/mysql
     ## Enable persistence using an existing PVC
     ##
-    # existingClaim:
+    existingClaim: ""
     ## Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -112,10 +117,10 @@ master:
     ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
     ##   GKE, AWS & OpenStack)
     ##
-    # storageClass: "-"
+    storageClass: "-"
     ## Persistent Volume Claim annotations
     ##
-    annotations:
+    annotations: {}
     ## Persistent Volume Access Mode
     ##
     accessModes:
@@ -187,13 +192,14 @@ slave:
   ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
   updateStrategy:
     type: RollingUpdate
+  annotations: {}
   persistence:
     ## If true, use a Persistent Volume Claim, If false, use emptyDir
     ##
     enabled: true
     mountPath: /bitnami/mysql
-    # storageClass: "-"
-    annotations:
+    storageClass: "-"
+    annotations: {}
     accessModes:
     - ReadWriteOnce
     ## Persistent Volume size
@@ -268,7 +274,7 @@ metrics:
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
-    # pullSecrets:
+    pullSecrets: []
     #   - myRegistryKeySecretName
   resources: {}
   annotations:
