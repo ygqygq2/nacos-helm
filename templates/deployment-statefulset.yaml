@@ -45,10 +45,7 @@ spec:
         app: {{ template "nacos.name" . }}
         release: {{ .Release.Name }}
     spec:
-      imagePullSecrets:
-      {{- range .Values.image.imagePullSecrets }}
-        - name: {{ . }}
-      {{- end }}
+{{- include "nacos.imagePullSecrets" . | indent 6 }}
       initContainers:
       - name: peer-finder-plugin-install
         image: nacos/nacos-peer-finder-plugin:latest
@@ -98,32 +95,9 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       containers:
-{{- if .Values.metrics.enabled }}
-        - name: metrics
-          image: {{ template "metrics.image" . }}
-          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-          command: [ '/usr/bin/exporter', '-nginx.scrape-uri', 'http://127.0.0.1:8080/status']
-          ports:
-          - name: metrics
-            containerPort: 9113
-          livenessProbe:
-            httpGet:
-              path: /metrics
-              port: metrics
-            initialDelaySeconds: 15
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /metrics
-              port: metrics
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
-          resources:
-{{ toYaml .Values.metrics.resources | indent 12 }}
-{{- end }}
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: {{ template "nacos.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           {{- if .Values.lifecycle }}
           lifecycle:
 {{ toYaml .Values.lifecycle | indent 12 }}
@@ -212,17 +186,42 @@ spec:
           {{- end }}
           volumeMounts:
             {{- if .Values.config.enabled }}
-            - name: {{ template "nacos.fullname" . }}-conf
+            - name: {{ template "nacos.name" . }}-conf
               mountPath: {{ .Values.config.mountPath }}
               subPath: {{ .Values.config.subPath }}
             {{- end }}
             {{- if .Values.secret.enabled }}
-            - name: {{ template "nacosc.fullname" . }}-secret
+            - name: {{ template "nacos.name" . }}-secret
               mountPath: {{ .Values.secret.mountPath }}
               subPath: {{ .Values.secret.subPath }}
               readOnly: {{ .Values.secret.readOnly }}
             {{- end }}
+{{- if .Values.persistentVolume.mountPaths }}
 {{ toYaml .Values.persistentVolume.mountPaths | indent 12 }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: {{ template "metrics.image" . }}
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          command: [ '/usr/bin/exporter', '-nginx.scrape-uri', 'http://127.0.0.1:8080/status']
+          ports:
+          - name: metrics
+            containerPort: 9113
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+          resources:
+{{ toYaml .Values.metrics.resources | indent 12 }}
+{{- end }}
         {{- if .Values.additionalContainers }}
 {{ toYaml .Values.additionalContainers | indent 8 }}
         {{- end }}
@@ -230,12 +229,12 @@ spec:
         {{- if .Values.config.enabled }}
         - name: {{ template "nacos.name" . }}-conf
           configMap:
-            name: {{ template "nacos.name" . }}
+            name: {{ template "nacos.fullname" . }}
         {{- end }}
         {{- if .Values.secret.enabled }}
         - name: {{ template "nacos.name" . }}-secret
           secret:
-            secretName: {{ template "nacos.name" . }}
+            secretName: {{ template "nacos.fullname" . }}
         {{- end }}
         {{- if .Values.deployment.additionalVolumes }}
 {{ toYaml .Values.deployment.additionalVolumes | indent 8 }}

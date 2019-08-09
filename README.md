@@ -40,6 +40,7 @@ The following table lists the configurable parameters of the chart and their def
 | Parameter                  | Description                         | Default                                |
 | -----------------------    | ----------------------------------- | -------------------------------------- |
 | `statefulset.enabled`      | use statefulset to start            | `true`                                 |
+| `global`                   | Global setting                      | see in values.yaml                     |
 | `deploymentStrategy`       | deployment rollingUpdate setting    | `{}`                                   |
 | `replicaCount`             | replicas number                     | `3`                                    |
 | `service`                  | Service type, protocol, port        | `ClusterIP` `TCP` 8848                 |
@@ -47,20 +48,21 @@ The following table lists the configurable parameters of the chart and their def
 | `startCommand`             | Start command                       | `[]`                                   |
 | `config`                   | Additional configmap to use         | see in `values.yaml`                   |
 | `secret`                   | Additional secret to use            | see in `values.yaml`                   |
-| `image`                    | `nacos` image, tag.            | `nacos/nacos-server` `1.0.0`                |
-| `ingress`                  | Ingress for the nacos.         | `false`                                     |
+| `image`                    | `nacos` image, tag.                 | `nacos/nacos-server` `1.1.0`           |
+| `ingress`                  | Ingress for the nacos.              | `false`                                |
 | `persistentVolume.enabled` | Create a volume to store data       | `false`                                |
-| `persistentVolume.storageClass` | Type of persistent volume claim     | `nil`                             |
+| `persistentVolume.storageClass` | Type of persistent volume claim| `nil`                                  |
 | `persistentVolume.accessModes`  | Persistent volume access modes | `[ReadWriteOnce]`                      |
 | `persistentVolume.size`         | Persistent volume access modes | `2Gi`                                  |
 | `persistentVolume.existingClaim`| Persistent volume existingClaim name| `{}`                              |
 | `persistentVolume.mountPaths`   | Persistent directory path      | see in `values.yaml`                   |
-| `persistentVolume.annotations`  | Persistent volume annotations       | `{}`                              |
+| `persistentVolume.annotations`  | Persistent volume annotations  | `{}`                                   |
 | `healthCheck.enabled`      | liveness and readiness probes       | `true`                                 |
 | `mysql`                    | mysql for nacos                     | see in values.yaml                     |
 | `resources`                | CPU/Memory resource requests/limits | `{}`                                   |
-| `deployment`               | deployment annotations initContainers| `{}`                                  |
-| `extraContainers`          | sidecar containers                  | `{}`                                   |
+| `lifecycle`                | Pod lifecycle                       | `{}`                                   |
+| `deployment.additionalVolumes`| Deployment additionalVolumes     | `[]`                                   |
+| `additionalContainers`     | sidecar containers                  | `{}`                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

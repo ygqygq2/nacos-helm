@@ -2,6 +2,15 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+##
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+#     - myRegistryKeySecretName
+
 statefulset:
   enabled: true
 ## String to partially override fullname template (will maintain the release name)
@@ -25,15 +34,17 @@ replicaCount: 3
 
 # 容器image及tag
 image:
+  registry: docker.io
   repository: nacos/nacos-server
   tag: 1.1.0
   pullPolicy: IfNotPresent # IfNotPresent: 有则不拉（减少流量和操作步骤），Always: 不管tag总拉（适合tag不变时更新）
-  imagePullSecrets: []
+  pullSecrets: []
 
 service:
   type: ClusterIP  # 一般不用修改
+  ingressPort: 8848
   ports:
-    web:  # 多端口暴露时，复制一段，ingress默认只暴露此名为web的端口
+    http:
       port: 8848  # Service port number for client-a port.
       protocol: TCP  # Service port protocol for client-a port.
 
@@ -53,17 +64,17 @@ startCommand: []
 #  - "-jar /test.jar"
 #  - "-Duser.timezone=GMT+08"
 
-
 ## Enable configmap and add data in configmap
 config:
   enabled: false
   mountPath: /conf
-  data: {} 
+  data: {}
 
 ## To use an additional secret, set enable to true and add data
 secret:
   enabled: false
   mountPath: /etc/secret-volume
+  subPath: ""
   readOnly: true
   data: {}
 
@@ -72,7 +83,7 @@ secret:
 healthCheck:
   enabled: true
   type: http  # http/tcp
-  port: web  # 上面的端口名或端口
+  port: http  # 上面的端口名或端口
   readinessPath: '/nacos/v1/console/health/readiness'  # http时必须设置
   livenessPath: '/nacos/v1/console/health/liveness'  # http时必须设置
   livenessInitialDelaySeconds: 60  # 初始延迟秒数
@@ -293,6 +304,7 @@ lifecycle: {}
   #   exec:
   #     command: ["/bin/bash","/post-start.sh"]
 
+## Deployment additional volumes.
 deployment:
   additionalVolumes: []
 
@@ -314,18 +326,18 @@ initContainers: {}
 ##
 metrics:
   enabled: false
-#   image:
-#     registry: docker.io
-#     repository: 
-#     tag: 
-#     pullPolicy: IfNotPresent
-#     ## Optionally specify an array of imagePullSecrets.
-#     ## Secrets must be manually created in the namespace.
-#     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-#     ##
-#     # pullSecrets:
-#     #   - myRegistrKeySecretName
-#   ## Metrics exporter pod Annotation and Labels
+  image:
+    registry: docker.io
+    repository: 
+    tag: 
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    pullSecrets: []
+    #  - myRegistrKeySecretName
+## Metrics exporter pod Annotation and Labels
   podAnnotations: {}
 #     prometheus.io/scrape: "true"
 #     prometheus.io/port: "9113"
