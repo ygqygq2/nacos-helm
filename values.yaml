@@ -36,7 +36,7 @@ replicaCount: 3
 image:
   registry: docker.io
   repository: nacos/nacos-server
-  tag: 1.1.0
+  tag: 1.1.4
   pullPolicy: IfNotPresent # IfNotPresent: 有则不拉（减少流量和操作步骤），Always: 不管tag总拉（适合tag不变时更新）
   pullSecrets: []
 

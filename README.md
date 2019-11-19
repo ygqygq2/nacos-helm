@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the chart and their def
 | `startCommand`             | Start command                       | `[]`                                   |
 | `config`                   | Additional configmap to use         | see in `values.yaml`                   |
 | `secret`                   | Additional secret to use            | see in `values.yaml`                   |
-| `image`                    | `nacos` image, tag.                 | `nacos/nacos-server` `1.1.0`           |
+| `image`                    | `nacos` image, tag.                 | `nacos/nacos-server` `1.1.4`           |
 | `ingress`                  | Ingress for the nacos.              | `false`                                |
 | `persistentVolume.enabled` | Create a volume to store data       | `false`                                |
 | `persistentVolume.storageClass` | Type of persistent volume claim| `nil`                                  |
