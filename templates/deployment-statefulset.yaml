@@ -51,15 +51,18 @@ spec:
         image: nacos/nacos-peer-finder-plugin:latest
         imagePullPolicy: Always
         volumeMounts:
-          - mountPath: /home/nacos/plugins
-            name: data-storage
-            subPath: plugins
+{{- if .Values.persistentVolume.mountPaths }}
+{{ toYaml .Values.persistentVolume.mountPaths | indent 10 }}
+{{- end }}
       - name: import-nacos-mysql-sql
         image: ygqygq2/mysql-exec-sql:latest
         imagePullPolicy: Always
-        args:
-        - https://raw.githubusercontent.com/alibaba/nacos/{{ .Chart.AppVersion }}/distribution/conf/nacos-mysql.sql
         env: 
+          - name: SQL_FILES
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nacos.fullname" . }}
+                key: sql_files
           - name: MYSQL_HOST
             valueFrom:
               secretKeyRef:
