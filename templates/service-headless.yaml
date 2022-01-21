@@ -3,7 +3,8 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    # 1.13 以前版本
+    #service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
   name: {{ template "nacos.fullname" . }}-headless
   labels:
     app: {{ template "nacos.name" . }}
@@ -12,6 +13,8 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   clusterIP: None
+  # 1.13 以后版本
+  publishNotReadyAddresses: true
   ports:
   {{- range $key, $value := .Values.service.ports }}
     - name: {{ $key }}

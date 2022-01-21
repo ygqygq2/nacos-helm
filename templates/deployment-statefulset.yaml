@@ -1,8 +1,9 @@
+{{- $root := . -}}
 {{- if .Values.statefulset.enabled }}
-apiVersion: apps/v1
+apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
 kind: StatefulSet
 {{- else }}
-apiVersion: apps/v1
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
 kind: Deployment
 {{- end }}
 metadata:
@@ -112,6 +113,13 @@ spec:
           env:
             - name: NACOS_REPLICAS
               value: "{{ .Values.replicaCount }}"
+            - name: NACOS_SERVERS
+              value: {{ range $i, $e := until (int $.Values.replicaCount) -}}
+                     {{- $nacosPodName := (printf "%s-%d.%s-headless" (include "nacos.fullname" $root) $i (include "nacos.fullname" $root)) -}}
+                     {{- $nacosPodName -}}:8848{{ printf " " }}
+                     {{- end }}
+            - name: DOMAIN_NAME
+              value: {{ .Values.clusterDomain | quote }}
             - name: SERVICE_NAME
               value: {{ template "nacos.fullname" . }}-headless
             - name: POD_NAMESPACE
@@ -119,41 +127,35 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.namespace
-            - name: MYSQL_MASTER_SERVICE_HOST
+            - name: MYSQL_SERVICE_HOST
               valueFrom:
                 secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
                   key: mysqlMasterHost
-            - name: MYSQL_MASTER_SERVICE_DB_NAME
+            - name: MYSQL_SERVICE_DB_NAME
               valueFrom:
                 secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
                   key: mysqlDatabase
-            - name: MYSQL_MASTER_SERVICE_PORT
+            - name: MYSQL_SERVICE_PORT
               valueFrom:
                 secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
                   key: mysqlMasterPort
-            - name: MYSQL_SLAVE_SERVICE_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "nacos.fullname" . }}
-                  key: mysqlSlaveHost
-            - name: MYSQL_SLAVE_SERVICE_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "nacos.fullname" . }}
-                  key: mysqlSlavePort
-            - name: MYSQL_MASTER_SERVICE_USER
+            - name: MYSQL_SERVICE_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
                   key: mysqlMasterUser
-            - name: MYSQL_MASTER_SERVICE_PASSWORD
+            - name: MYSQL_SERVICE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "nacos.fullname" . }}
                   key: mysqlMasterPassword
+            - name: NACOS_SERVER_PORT
+              value: "8848"
+            - name: NACOS_APPLICATION_PORT
+              value: "8848"
 {{ toYaml .Values.env | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
