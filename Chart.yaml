@@ -1,9 +1,19 @@
-apiVersion: v1
-appVersion: 1.1.4
+apiVersion: v2
+appVersion: 2.0.4
+dependencies:
+- name: common
+  repository: https://charts.bitnami.com/bitnami
+  tags:
+  - bitnami-common
+  version: 1.x.x
+- name: mysql
+  version: 8.x.x
+  repository: https://charts.bitnami.com/bitnami
+  condition: mysql.enabled
 description: Chart for nacos, an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
 engine: gotpl
 name: nacos
-version: 1.2.0
+version: 2.0.0
 home: https://nacos.io
 icon: https://nacos.io/img/nacos_colorful.png
 keywords:
