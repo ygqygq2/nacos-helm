@@ -59,7 +59,7 @@ image:
   registry: docker.io
   repository: nacos/nacos-server
   tag: v2.0.4
-  pullPolicy: IfNotPresent # IfNotPresent: 有则不拉（减少流量和操作步骤），Always: 不管tag总拉（适合tag不变时更新）
+  pullPolicy: IfNotPresent  # IfNotPresent: 有则不拉（减少流量和操作步骤），Always: 不管tag总拉（适合tag不变时更新）
   pullSecrets: []
 
 service:
@@ -72,7 +72,7 @@ service:
 
 ## env set
 ## ref: https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
-env: 
+env:
   - name: PREFER_HOST_MODE
     value: "hostname"
   # - name: NACOS_SERVER_PORT
@@ -100,7 +100,7 @@ secret:
   readOnly: true
   data: {}
 
-## liveness and readiness 
+## liveness and readiness
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 healthCheck:
   enabled: true
@@ -112,7 +112,7 @@ healthCheck:
   livenessPeriodSeconds: 5  # 检测周期，默认值5，最小为1
   readinessInitialDelaySeconds: 60  # 初始延迟秒数
   readinessPeriodSeconds: 5   # 检测周期，默认值5，最小为1
- 
+
 resources:
   # 容器资源设置
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -170,6 +170,7 @@ ingress:  # 是否使用nginx暴露域名或端口
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  ingressClassName: ""
   path: /nacos
   pathType: ImplementationSpecific
   hosts:
@@ -202,7 +203,7 @@ mysql:
     password: "nacos"
     replicationUser: "replicator"
     replicationPassword: "replicator"
-  
+
   primary:
     persistence:
       enabled: false
@@ -212,7 +213,7 @@ mysql:
       accessModes:
       - ReadWriteOnce
       size: 8Gi
-  
+
     configuration: |-
       [mysqld]
       skip_ssl
@@ -232,18 +233,18 @@ mysql:
       default-time_zone = '+8:00'
       character-set-server=utf8mb4
       collation-server = utf8mb4_unicode_ci
-  
+
       [client]
       port=3306
       socket=/opt/bitnami/mysql/tmp/mysql.sock
       plugin_dir=/opt/bitnami/mysql/lib/plugin
       default-character-set=UTF8
-  
+
       [manager]
       port=3306
       socket=/opt/bitnami/mysql/tmp/mysql.sock
       pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
-  
+
   secondary:
     replicaCount: 1
     persistence:
@@ -254,7 +255,7 @@ mysql:
       accessModes:
       - ReadWriteOnce
       size: 8Gi
-  
+
     configuration: |-
       [mysqld]
       skip_ssl
@@ -274,13 +275,13 @@ mysql:
       default-time_zone = '+8:00'
       character-set-server=utf8mb4
       collation-server = utf8mb4_unicode_ci
-  
+
       [client]
       port=3306
       socket=/opt/bitnami/mysql/tmp/mysql.sock
       plugin_dir=/opt/bitnami/mysql/lib/plugin
       default-character-set=UTF8
-  
+
       [manager]
       port=3306
       socket=/opt/bitnami/mysql/tmp/mysql.sock
@@ -294,7 +295,6 @@ initDB:
     tag: latest
     pullPolicy: IfNotPresent
 
- 
 ## Uncomment and modify this to run a command after starting the core container.
 ## ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
 lifecycle: {}
@@ -329,8 +329,8 @@ metrics:
   enabled: false
   image:
     registry: docker.io
-    repository: 
-    tag: 
+    repository:
+    tag:
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

@@ -30,7 +30,7 @@ The command deploys nacos cluster on the Kubernetes cluster in the default confi
 To uninstall/delete the `my-release` deployment:
 
 ```bash
-$ helm delete my-release
+$ helm uninstall my-release
 ```
 
 ## Configuration
