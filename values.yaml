@@ -287,6 +287,14 @@ mysql:
       socket=/opt/bitnami/mysql/tmp/mysql.sock
       pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
 
+initDB:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: ygqygq2/mysql-exec-sql
+    tag: latest
+    pullPolicy: IfNotPresent
+
 ## Uncomment and modify this to run a command after starting the core container.
 ## ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
 lifecycle: {}
