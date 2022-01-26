@@ -1,5 +1,7 @@
 # nacos - an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
 
+![Build Status](https://github.com/ygqygq2/nacos-helm/actions/workflows/lint-test.yaml/badge.svg)
+
 [Nacos](https://nacos.io) is an easy-to-use platform designed for dynamic service discovery and configuration and service management. It helps you to build cloud native applications and microservices platform easily.
 
 ## Introduction

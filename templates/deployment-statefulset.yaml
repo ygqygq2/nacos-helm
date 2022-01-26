@@ -16,9 +16,8 @@ metadata:
 {{- if .Values.labels }}
 {{ toYaml .Values.labels | indent 4 }}
 {{- end }}
-  annotations:
-    "helm.sh/hook": post-install
 {{- if .Values.annotations }}
+  annotations:
 {{ toYaml .Values.annotations | indent 4 }}
 {{- end }}
 spec:
