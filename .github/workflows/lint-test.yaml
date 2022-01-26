@@ -31,5 +31,6 @@ jobs:
 
       - name: Run chart-testing (install)
         run: |
+          helm dependency build
           helm install test . --atomic
           helm test test|grep 'Phase:'|grep Succeeded
