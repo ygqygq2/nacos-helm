@@ -9,4 +9,9 @@ spec:
   - name: {{ .Release.Name }}-test
     image: nginx:latest
     command: ["sh", "-c", "curl -I -m 10 -o /dev/null -s -w %{http_code} http://$NACOS_SERVICE_HOST:$NACOS_SERVICE_PORT/nacos/"]
+    env:
+    - name: NACOS_SERVER_PORT
+      value: "8848"
+    - name: NACOS_SERVICE_HOST 
+      value: {{ template "nacos.fullname" . }}
   restartPolicy: Never
