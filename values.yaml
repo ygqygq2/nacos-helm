@@ -287,7 +287,6 @@ mysql:
       socket=/opt/bitnami/mysql/tmp/mysql.sock
       pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
 
-<<<<<<< HEAD
 initDB:
   enabled: true
   image:
@@ -296,9 +295,6 @@ initDB:
     tag: latest
     pullPolicy: IfNotPresent
 
- 
-=======
->>>>>>> df66902132d7e465fba4cce1f56efc9038569af5
 ## Uncomment and modify this to run a command after starting the core container.
 ## ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
 lifecycle: {}
