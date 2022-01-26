@@ -16,8 +16,9 @@ metadata:
 {{- if .Values.labels }}
 {{ toYaml .Values.labels | indent 4 }}
 {{- end }}
-{{- if .Values.annotations }}
   annotations:
+    "helm.sh/hook": post-install
+{{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 4 }}
 {{- end }}
 spec:
@@ -55,40 +56,40 @@ spec:
 {{- if .Values.persistentVolume.mountPaths }}
 {{ toYaml .Values.persistentVolume.mountPaths | indent 10 }}
 {{- end }}
-      - name: import-nacos-mysql-sql
-        image: ygqygq2/mysql-exec-sql:latest
-        imagePullPolicy: Always
-        env: 
-          - name: SQL_FILES
-            valueFrom:
-              configMapKeyRef:
-                name: {{ template "nacos.fullname" . }}
-                key: sql_files
-          - name: MYSQL_HOST
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "nacos.fullname" . }}
-                key: mysqlMasterHost
-          - name: MYSQL_DB
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "nacos.fullname" . }}
-                key: mysqlDatabase
-          - name: MYSQL_PORT
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "nacos.fullname" . }}
-                key: mysqlMasterPort
-          - name: MYSQL_USER
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "nacos.fullname" . }}
-                key: mysqlMasterUser
-          - name: MYSQL_PASSWD
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "nacos.fullname" . }}
-                key: mysqlMasterPassword
+#      - name: import-nacos-mysql-sql
+#        image: ygqygq2/mysql-exec-sql:latest
+#        imagePullPolicy: Always
+#        env: 
+#          - name: SQL_FILES
+#            valueFrom:
+#              configMapKeyRef:
+#                name: {{ template "nacos.fullname" . }}
+#                key: sql_files
+#          - name: MYSQL_HOST
+#            valueFrom:
+#              secretKeyRef:
+#                name: {{ template "nacos.fullname" . }}
+#                key: mysqlMasterHost
+#          - name: MYSQL_DB
+#            valueFrom:
+#              secretKeyRef:
+#                name: {{ template "nacos.fullname" . }}
+#                key: mysqlDatabase
+#          - name: MYSQL_PORT
+#            valueFrom:
+#              secretKeyRef:
+#                name: {{ template "nacos.fullname" . }}
+#                key: mysqlMasterPort
+#          - name: MYSQL_USER
+#            valueFrom:
+#              secretKeyRef:
+#                name: {{ template "nacos.fullname" . }}
+#                key: mysqlMasterUser
+#          - name: MYSQL_PASSWD
+#            valueFrom:
+#              secretKeyRef:
+#                name: {{ template "nacos.fullname" . }}
+#                key: mysqlMasterPassword
       {{- if .Values.initContainers }}
 {{ toYaml .Values.initContainers | indent 6 }}
       {{- end }}
