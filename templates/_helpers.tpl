@@ -16,6 +16,14 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "nacos.mysql.fullname" -}}
+{{- printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "nacos.chart" -}}
@@ -62,21 +70,34 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
-Create a default fully qualified mysql name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+Return the mysql primary Hostname
 */}}
-{{- define "nacos.mysql.fullname" -}}
-{{- $name := default "mysql" .Values.mysql.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- define "nacos.mysql.primaryHost" -}}
+{{- if .Values.mysql.enabled }}
+    {{- if eq .Values.mysql.architecture "replication" }}
+        {{- printf "%s-%s" (include "nacos.mysql.fullname" .) "primary" | trunc 63 | trimSuffix "-" -}}
+    {{- else -}}
+        {{- printf "%s" (include "nacos.mysql.fullname" .) -}}
+    {{- end -}}
+{{- else -}}
+    {{- printf "%s" .Values.mysql.external.mysqlMasterHost -}}
+{{- end -}}
 {{- end -}}
 
-{{- define "nacos.mysql.master.service.fullname" -}}
-{{- printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" -}}
-{{- end }}
-
-{{- define "nacos.mysql.slave.service.fullname" -}}
-{{- printf "%s-%s" .Release.Name "mysql-slave" | trunc 63 | trimSuffix "-" -}}
-{{- end }}
+{{/*
+Return the mysql secondary Hostname
+*/}}
+{{- define "nacos.mysql.secondaryHost" -}}
+{{- if .Values.mysql.enabled }}
+    {{- if eq .Values.mysql.architecture "replication" }}
+        {{- printf "%s-%s" (include "nacos.mysql.fullname" .) "secondary" | trunc 63 | trimSuffix "-" -}}
+    {{- else -}}
+        {{- printf "%s" (include "nacos.mysql.fullname" .) -}}
+    {{- end -}}
+{{- else -}}
+    {{- printf "%s" .Values.mysql.external.mysqlSlaveHost -}}
+{{- end -}}
+{{- end -}}
 
 {{/*
 Compile all warnings into a single message, and call fail.
