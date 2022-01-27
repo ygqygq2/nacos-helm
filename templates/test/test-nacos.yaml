@@ -8,7 +8,7 @@ spec:
   containers:
   - name: {{ .Release.Name }}-test
     image: nginx:latest
-    command: ["sh", "-c", "curl -I -m 10 -o /dev/null -s -w %{http_code} http://$NACOS_SERVICE_HOST:$NACOS_SERVICE_PORT/nacos/"]
+    command: ["sh", "-c", "curl -I -m 10 -o /dev/null -s -w %{http_code} http://$NACOS_SERVICE_HOST:$NACOS_SERVER_PORT/nacos/"]
     env:
     - name: NACOS_SERVER_PORT
       value: "8848"
