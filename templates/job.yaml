@@ -26,10 +26,10 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+{{- include "nacos.imagePullSecrets" . | nindent 6 }}
       containers:
       - name: import-nacos-mysql-sql
         image: {{ template "nacos.initDBImage" . }}
-{{- include "nacos.imagePullSecrets" . | nindent 6 }}
         imagePullPolicy: {{ .Values.initDB.image.pullPolicy }}
         env: 
           - name: SQL_FILES
