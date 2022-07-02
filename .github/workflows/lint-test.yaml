@@ -31,5 +31,5 @@ jobs:
 
       - name: Run chart-testing (install)
         run: |
-          helm install test . --atomic
+          helm install test . --atomic --timeout 10m
           helm test test|grep 'Phase:'|grep Succeeded
