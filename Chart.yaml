@@ -13,7 +13,7 @@ dependencies:
 description: Chart for nacos, an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
 engine: gotpl
 name: nacos
-version: 2.0.2
+version: 2.1.0
 home: https://nacos.io
 icon: https://nacos.io/img/nacos_colorful.png
 keywords:
@@ -21,7 +21,7 @@ keywords:
 - dynamic service discovery
 - configuration and service management platform
 maintainers:
-- email: 29ygq@sina.com
+- email: ygqygq2@qq.com
   name: ygqygq2
 sources:
 - https://github.com/alibaba/nacos

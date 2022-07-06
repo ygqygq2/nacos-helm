@@ -14,5 +14,5 @@ spec:
     - name: NACOS_SERVER_PORT
       value: "8848"
     - name: NACOS_SERVICE_HOST 
-      value: {{ template "nacos.fullname" . }}
+      value: {{ include "common.names.fullname" . }}
   restartPolicy: Never
