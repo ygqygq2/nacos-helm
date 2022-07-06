@@ -20,47 +20,56 @@ spec:
       labels: {{- include "common.labels.standard" . | nindent 8 }}
         app.kubernetes.io/component: mysql
     spec:
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector: {{- include "common.tplvalues.render" (dict "value" .Values.nodeSelector "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.tolerations "context" $) | nindent 8 }}
+      {{- end }}
+
+      {{- if .Values.affinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      {{- else }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.podAffinityPreset "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.podAntiAffinityPreset "context" $) | nindent 10 }}
+        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.nodeAffinityPreset.type "key" .Values.nodeAffinityPreset.key "values" .Values.nodeAffinityPreset.values) | nindent 10 }}
+      {{- end }}
 {{- include "nacos.imagePullSecrets" . | nindent 6 }}
       containers:
       - name: import-nacos-mysql-sql
-        image: {{ template "nacos.initDBImage" . }}
+        image: {{ template "nacos.initDB.image" . }}
         imagePullPolicy: {{ .Values.initDB.image.pullPolicy }}
         env: 
           - name: SQL_FILES
             valueFrom:
               configMapKeyRef:
-                name: {{ template "nacos.fullname" . }}
+                name: {{ include "common.names.fullname" . }}
                 key: sql_files
           - name: MYSQL_HOST
             valueFrom:
               secretKeyRef:
-                name: {{ template "nacos.fullname" . }}
+                name: {{ include "common.names.fullname" . }}
                 key: mysqlMasterHost
           - name: MYSQL_DB
             valueFrom:
               secretKeyRef:
-                name: {{ template "nacos.fullname" . }}
+                name: {{ include "common.names.fullname" . }}
                 key: mysqlDatabase
           - name: MYSQL_PORT
             valueFrom:
               secretKeyRef:
-                name: {{ template "nacos.fullname" . }}
+                name: {{ include "common.names.fullname" . }}
                 key: mysqlMasterPort
           - name: MYSQL_USER
             valueFrom:
               secretKeyRef:
-                name: {{ template "nacos.fullname" . }}
+                name: {{ include "common.names.fullname" . }}
                 key: mysqlMasterUser
           - name: MYSQL_PASSWD
             valueFrom:
               secretKeyRef:
-                name: {{ template "nacos.fullname" . }}
+                name: {{ include "common.names.fullname" . }}
                 key: mysqlMasterPassword
       restartPolicy: OnFailure
   parallelism: 1

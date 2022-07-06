@@ -5,13 +5,11 @@ metadata:
   annotations:
     # 1.13 以前版本
     #service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-  name: {{ template "nacos.fullname" . }}-headless
-  labels:
-    app: {{ template "nacos.name" . }}
-    chart: {{ template "nacos.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  name: {{ printf "%s-headless" (include "common.names.fullname" .) }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
 spec:
+  type: ClusterIP
   clusterIP: None
   # 1.13 以后版本
   publishNotReadyAddresses: true
@@ -19,9 +17,7 @@ spec:
   {{- range $key, $value := .Values.service.ports }}
     - name: {{ $key }}
       targetPort: {{ $key }}
-{{ toYaml $value | indent 6 }}
+      {{- toYaml $value | nindent 6 }}
   {{- end }}
-  selector:
-    app: {{ template "nacos.name" . }}
-    release: {{ .Release.Name }}
+  selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
 {{- end -}}
