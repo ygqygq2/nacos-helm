@@ -67,7 +67,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | -------------------- | -------------------------------------------------------------------- | --------------------- |
 | `image.registry`     | nacos image registry                                   	      | `docker.io`           |
 | `image.repository`   | nacos image repository                                 	      | `nacos/nacos-server`  |
-| `image.tag`          | nacos image tag (immutable tags are recommended)       	      | `v2.1.0`              |
+| `image.tag`          | nacos image tag (immutable tags are recommended)       	      | `v2.2.0`              |
 | `image.pullPolicy`   | nacos image pull policy                                	      | `IfNotPresent`        |
 | `image.pullSecrets`  | Specify docker-registry secret names as an array                     | `[]`                  |
 | `image.debug`        | Set to true if you would like to see extra information on logs       | `false`               |
