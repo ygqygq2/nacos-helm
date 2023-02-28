@@ -11,7 +11,7 @@ metadata:
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 data:
-  sql_files: "https://raw.githubusercontent.com/alibaba/nacos/{{ .Chart.AppVersion }}/distribution/conf/nacos-mysql.sql"
+  sql_files: "https://raw.githubusercontent.com/alibaba/nacos/{{ .Chart.AppVersion }}/distribution/conf/mysql-schema.sql"
 {{- if .Values.config.enabled -}}
   {{- toYaml .Values.config.data | nindent 2 }}
 {{- end -}}
