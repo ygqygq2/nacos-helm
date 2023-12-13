@@ -63,7 +63,7 @@ replicaCount: 3
 image:
   registry: docker.io
   repository: nacos/nacos-server
-  tag: v2.2.0
+  tag: v2.2.3
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -119,6 +119,7 @@ service:
 ##   - name: FOO
 ##     value: "bar"
 ##
+## ref: https://github.com/nacos-group/nacos-docker/blob/master/README_ZH.md
 extraEnvVars:
   - name: PREFER_HOST_MODE
     value: "hostname"
@@ -126,6 +127,17 @@ extraEnvVars:
     value: "Asia/Shanghai"
   - name: SPRING_DATASOURCE_PLATFORM
     value: "mysql"
+  - name: NACOS_AUTH_USER_AGENT_AUTH_WHITE_ENABLE
+    value: "false"
+  - name: NACOS_AUTH_ENABLE
+    value: "true"
+  - name: NACOS_AUTH_TOKEN
+    value: "SecretKey012345678901234567890123456789012345678901234567890123456789"
+  - name: NACOS_AUTH_IDENTITY_KEY
+    value: "example"
+  - name: NACOS_AUTH_IDENTITY_VALUE
+    value: "example"
+
 ## @param extraEnvVarsCM ConfigMap with extra environment variables
 ##
 extraEnvVarsCM: ""
@@ -393,7 +405,7 @@ extraVolumes: []
 ingress:
   ## @param ingress.enabled Enable ingress controller resource
   ##
-  enabled: true
+  enabled: false
   ## @param ingress.apiVersion Force Ingress API version (automatically detected if not set)
   ##
   apiVersion: ""
