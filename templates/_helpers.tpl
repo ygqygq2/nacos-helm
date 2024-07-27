@@ -7,6 +7,13 @@ Return the proper Nacos image name
 {{- end -}}
 
 {{/*
+Return the proper Nacos plugin image name
+*/}}
+{{- define "nacos.plugin.image" -}}
+{{- include "common.images.image" (dict "imageRoot" .Values.plugin.image "global" .Values.global) -}}
+{{- end -}}
+
+{{/*
 Return the proper Nacos initDB image name
 */}}
 {{- define "nacos.initDB.image" -}}
@@ -17,7 +24,7 @@ Return the proper Nacos initDB image name
 Return the proper Docker Image Registry Secret Names
 */}}
 {{- define "nacos.imagePullSecrets" -}}
-{{- include "common.images.pullSecrets" (dict "images" (list .Values.initDB.image) "global" .Values.global) -}}
+{{- include "common.images.pullSecrets" (dict "images" (list .Values.image .Values.initDB.image) "global" .Values.global) -}}
 {{- end -}}
 
 {{/*

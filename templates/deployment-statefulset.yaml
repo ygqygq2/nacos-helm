@@ -72,8 +72,8 @@ spec:
       {{- include "nacos.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: peer-finder-plugin-install
-          image: nacos/nacos-peer-finder-plugin:latest
-          imagePullPolicy: Always
+          image: {{ template "nacos.plugin.image" . }}
+          imagePullPolicy: {{ .Values.plugin.image.pullPolicy | quote }}
           volumeMounts:
             {{- if .Values.persistence.mountPaths }}
             {{- toYaml .Values.persistence.mountPaths | nindent 12 }}

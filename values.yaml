@@ -51,7 +51,7 @@ replicaCount: 3
 ## @section Tomcat parameters
 ##
 
-## Bitnami Tomcat image version
+## Nacos image version
 ## ref: https://hub.docker.com/r/bitnami/tomcat/tags/
 ## @param image.registry Tomcat image registry
 ## @param image.repository Tomcat image repository
@@ -63,7 +63,7 @@ replicaCount: 3
 image:
   registry: docker.io
   repository: nacos/nacos-server
-  tag: v2.3.0
+  tag: v2.4.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -77,6 +77,13 @@ image:
   ##   - myRegistryKeySecretName
   ##
   pullSecrets: []
+
+plugin:
+  image:
+    registry: docker.io
+    repository: nacos/nacos-peer-finder-plugin
+    tag: latest
+    pullPolicy: IfNotPresent
 
 ## Kubernetes svc configuration
 ##
