@@ -63,7 +63,7 @@ replicaCount: 3
 image:
   registry: docker.io
   repository: nacos/nacos-server
-  tag: v2.4.0
+  tag: v3.0.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -99,10 +99,13 @@ service:
   ports:
     ## 多端口暴露时，复制一段
     http:
-      port: 8848  # Service port number for client-a port.
+      port: 8080  # Service port number for client-a port.
       protocol: TCP  # Service port protocol for client-a port.
       ## Use nodePorts to requets some specific ports when usin NodePort
       # nodePort: 30020  # <to set explicitly, choose port between 30000-32767> 默认会自动生成
+    server:
+      port: 8848
+      protocal: TCP
   ## @param service.loadBalancerSourceRanges Addresses that are allowed when service is LoadBalancer
   ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
   ## e.g:
@@ -207,10 +210,9 @@ customReadinessProbe: {}
 healthCheck:
   type: http  # http/tcp
   port: http  # 上面的端口名或端口
-  httpPath: '/'  # http时必须设置
   livenessProbe:
     enabled: true
-    httpPath: '/nacos/v1/console/health/liveness'  # http时必须设置
+    httpPath: '/'  # http时必须设置
     initialDelaySeconds: 60   # 初始延迟秒数, k8s默认值为0，最小为0
     periodSeconds: 30  # 检测周期，k8s默认值10，最小为1
     #  timeoutSeconds: 3  # 检测超时，k8s默认值1，最小为1
@@ -218,7 +220,7 @@ healthCheck:
     #  failureThreshold: 5  # 失败后重试次数，k8s默认值3，最小为1
   readinessProbe:
     enabled: true
-    httpPath: '/nacos/v1/console/health/readiness'  # http时必须设置
+    httpPath: '/'  # http时必须设置
     initialDelaySeconds: 60   # 初始延迟秒数, k8s默认值为0，最小为0
     periodSeconds: 30  # 检测周期，k8s默认值10，最小为1
     #  timeoutSeconds: 3  # 检测超时，k8s默认值1，最小为1
@@ -426,7 +428,7 @@ ingress:
   hostname: chart-example.local
   ## @param ingress.path The Path to nacos&reg;. You may need to set this to '/*' in order to use this with ALB ingress controllers.
   ##
-  path: /nacos
+  path: /
   ## @param ingress.pathType Ingress path type
   ##
   pathType: ImplementationSpecific

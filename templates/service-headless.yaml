@@ -3,8 +3,6 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    # 1.13 以前版本
-    #service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
   name: {{ printf "%s-headless" (include "common.names.fullname" .) }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
@@ -17,7 +15,8 @@ spec:
   {{- range $key, $value := .Values.service.ports }}
     - name: {{ $key }}
       targetPort: {{ $key }}
-      {{- toYaml $value | nindent 6 }}
+      port: {{ $value.port }}
+      protocol: {{ $value.protocol }}
   {{- end }}
   selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
 {{- end -}}
