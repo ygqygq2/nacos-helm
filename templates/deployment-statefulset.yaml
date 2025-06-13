@@ -16,7 +16,7 @@ metadata:
 spec:
   selector:
     matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ if eq .Values.mode "standalone" }}1{{ else }}{{ .Values.replicaCount }}{{ end }}
   {{- if .Values.statefulset.enabled }}
   serviceName: {{ include "common.names.fullname" . }}-headless
   podManagementPolicy: {{ .Values.podManagementPolicy }}
@@ -109,22 +109,7 @@ spec:
           args: {{- include "common.tplvalues.render" (dict "value" .Values.args "context" $) | nindent 12 }}
           {{- end }}
           env:
-            - name: NACOS_REPLICAS
-              value: "{{ .Values.replicaCount }}"
-            - name: NACOS_SERVERS
-              value: {{ range $i, $e := until (int $.Values.replicaCount) -}}
-                     {{- $nacosPodName := (printf "%s-%d.%s-headless" (include "common.names.fullname" $root) $i (include "common.names.fullname" $root)) -}}
-                     {{- $nacosPodName -}}:8848{{ printf " " }}
-                     {{- end }}
-            - name: DOMAIN_NAME
-              value: {{ .Values.clusterDomain | quote }}
-            - name: SERVICE_NAME
-              value: {{ include "common.names.fullname" . }}-headless
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.namespace
+            {{- if ne .Values.mode "standalone" }}
             - name: MYSQL_SERVICE_HOST
               valueFrom:
                 secretKeyRef:
@@ -150,6 +135,23 @@ spec:
                 secretKeyRef:
                   name: {{ include "common.names.fullname" . }}
                   key: mysqlMasterPassword
+            {{- end }}
+            - name: NACOS_REPLICAS
+              value: "{{ .Values.replicaCount }}"
+            - name: NACOS_SERVERS
+              value: {{ range $i, $e := until (int $.Values.replicaCount) -}}
+                     {{- $nacosPodName := (printf "%s-%d.%s-headless" (include "common.names.fullname" $root) $i (include "common.names.fullname" $root)) -}}
+                     {{- $nacosPodName -}}:8848{{ printf " " }}
+                     {{- end }}
+            - name: DOMAIN_NAME
+              value: {{ .Values.clusterDomain | quote }}
+            - name: SERVICE_NAME
+              value: {{ include "common.names.fullname" . }}-headless
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
             - name: NACOS_SERVER_PORT
               value: "8848"
             - name: NACOS_APPLICATION_PORT
