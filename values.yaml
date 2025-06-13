@@ -63,7 +63,7 @@ replicaCount: 3
 image:
   registry: docker.io
   repository: nacos/nacos-server
-  tag: v3.0.0
+  tag: v3.0.1
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -122,6 +122,9 @@ service:
   ## @param service.annotations Annotations for Logstash service
   ##
   annotations: {}
+
+## @param mode Nacos mode, standalone or cluster
+mode: "cluster"
 
 ## @param extraEnvVars Extra environment variables to be set on MinIO&reg; container
 ## e.g:
