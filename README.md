@@ -67,7 +67,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | -------------------- | -------------------------------------------------------------------- | --------------------- |
 | `image.registry`     | nacos image registry                                   	      | `docker.io`           |
 | `image.repository`   | nacos image repository                                 	      | `nacos/nacos-server`  |
-| `image.tag`          | nacos image tag (immutable tags are recommended)       	      | `v2.3.0`              |
+| `image.tag`          | nacos image tag (immutable tags are recommended)       	      | `v3.0.1`              |
 | `image.pullPolicy`   | nacos image pull policy                                	      | `IfNotPresent`        |
 | `image.pullSecrets`  | Specify docker-registry secret names as an array                     | `[]`                  |
 | `image.debug`        | Set to true if you would like to see extra information on logs       | `false`               |
@@ -247,4 +247,3 @@ For annotations, please see [this document](https://github.com/kubernetes/ingres
 ## Troubleshooting
 
 Find more information about how to deal with common errors related to Bitnami¡¯s Helm charts in [this troubleshooting guide](https://docs.bitnami.com/general/how-to/troubleshoot-helm-chart-issues).
-

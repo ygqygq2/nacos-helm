@@ -124,6 +124,7 @@ service:
   annotations: {}
 
 ## @param mode Nacos mode, standalone or cluster
+## standalone mode also need set `mysql.enabled` to `false`
 mode: "cluster"
 
 ## @param extraEnvVars Extra environment variables to be set on MinIO&reg; container
