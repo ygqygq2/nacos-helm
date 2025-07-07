@@ -23,9 +23,9 @@ $ helm install my-release nacos
 
 The command deploys nacos cluster on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
->tip:
->The default user is: nacos
->The default password is: nacos
+> tip:
+> The default user is: nacos
+> The default password is: nacos
 
 ## Uninstalling the Chart
 
@@ -47,7 +47,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `global.imagePullSecrets` | Global Docker registry secret names as an array | `[]`  |
 | `global.storageClass`     | Global StorageClass for Persistent Volume(s)    | `""`  |
 
-
 ### Common parameters
 
 | Name                | Description                                                                           | Value           |
@@ -60,24 +59,22 @@ The command removes all the Kubernetes components associated with the chart and 
 | `commonLabels`      | Add labels to all the deployed resources                                              | `{}`            |
 | `commonAnnotations` | Add annotations to all the deployed resources                                         | `{}`            |
 
-
 ### nacos parameters
 
-| Name                 | Description                                                          | Value                 |
-| -------------------- | -------------------------------------------------------------------- | --------------------- |
-| `image.registry`     | nacos image registry                                   	      | `docker.io`           |
-| `image.repository`   | nacos image repository                                 	      | `nacos/nacos-server`  |
-| `image.tag`          | nacos image tag (immutable tags are recommended)       	      | `v3.0.1`              |
-| `image.pullPolicy`   | nacos image pull policy                                	      | `IfNotPresent`        |
-| `image.pullSecrets`  | Specify docker-registry secret names as an array                     | `[]`                  |
-| `image.debug`        | Set to true if you would like to see extra information on logs       | `false`               |
-| `hostAliases`        | Deployment pod host aliases                                          | `[]`                  |
-| `command`            | Override default container command (useful when using custom images) | `[]`                  |
-| `args`               | Override default container args (useful when using custom images)    | `[]`                  |
-| `extraEnvVars`       | Extra environment variables to be set on nacos containers            | `[]`                  |
-| `extraEnvVarsCM`     | ConfigMap with extra environment variables                           | `""`                  |
-| `extraEnvVarsSecret` | Secret with extra environment variables                              | `""`                  |
-
+| Name                 | Description                                                          | Value                |
+| -------------------- | -------------------------------------------------------------------- | -------------------- |
+| `image.registry`     | nacos image registry                                                 | `docker.io`          |
+| `image.repository`   | nacos image repository                                               | `nacos/nacos-server` |
+| `image.tag`          | nacos image tag (immutable tags are recommended)                     | `v3.0.2`             |
+| `image.pullPolicy`   | nacos image pull policy                                              | `IfNotPresent`       |
+| `image.pullSecrets`  | Specify docker-registry secret names as an array                     | `[]`                 |
+| `image.debug`        | Set to true if you would like to see extra information on logs       | `false`              |
+| `hostAliases`        | Deployment pod host aliases                                          | `[]`                 |
+| `command`            | Override default container command (useful when using custom images) | `[]`                 |
+| `args`               | Override default container args (useful when using custom images)    | `[]`                 |
+| `extraEnvVars`       | Extra environment variables to be set on nacos containers            | `[]`                 |
+| `extraEnvVarsCM`     | ConfigMap with extra environment variables                           | `""`                 |
+| `extraEnvVarsSecret` | Secret with extra environment variables                              | `""`                 |
 
 ### nacos deployment parameters
 
@@ -107,7 +104,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `resources.requests`                    | The requested resources for the nacos container                                           | `{}`    |
 | `customLivenessProbe`                   | Override default liveness probe                                                           | `{}`    |
 | `customReadinessProbe`                  | Override default readiness probe                                                          | `{}`    |
-| `healthCheck`                           | 简化的健康检测，支持 tcp、http，具体查看 `values.yaml`                                    |         |
+| `healthCheck`                           | Health check, see in `values.yaml`                                                        |         |
 | `autoscaling.enabled`                   | Enable autoscaling for nacos deployment                                                   | `false` |
 | `autoscaling.minReplicas`               | Minimum number of replicas to scale back                                                  | `""`    |
 | `autoscaling.maxReplicas`               | Maximum number of replicas to scale out                                                   | `""`    |
@@ -126,7 +123,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `pdb.minAvailable`                      | Min number of pods that must still be available after the eviction                        | `1`     |
 | `pdb.maxUnavailable`                    | Max number of pods that can be unavailable after the eviction                             | `0`     |
 
-
 ### Traffic Exposure parameters
 
 | Name                            | Description                                                                                                                      | Value                    |
@@ -143,7 +139,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ingress.pathType`              | Ingress path type                                                                                                                | `ImplementationSpecific` |
 | `ingress.apiVersion`            | Force Ingress API version (automatically detected if not set)                                                                    | `""`                     |
 | `ingress.hostname`              | Default host for the ingress resource                                                                                            | `nginx.local`            |
-| `ingress.path`                  | The Path to Nginx. You may need to set this to '/*' in order to use this with ALB ingress controllers.                           | `/`                      |
+| `ingress.path`                  | The Path to Nginx. You may need to set this to '/\*' in order to use this with ALB ingress controllers.                          | `/`                      |
 | `ingress.annotations`           | Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations. | `{}`                     |
 | `ingress.tls`                   | Create TLS Secret                                                                                                                | `false`                  |
 | `ingress.extraHosts`            | The list of additional hostnames to be covered with this ingress record.                                                         | `[]`                     |
@@ -159,24 +155,22 @@ The command removes all the Kubernetes components associated with the chart and 
 | `healthIngress.extraTls`        | TLS configuration for additional hostnames to be covered                                                                         | `[]`                     |
 | `healthIngress.secrets`         | TLS Secret configuration                                                                                                         | `[]`                     |
 
-
 ### Metrics parameters
 
-| Name                                       | Description                                                                                                                               | Value                    |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `metrics.serviceMonitor.enabled`           | Creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                                               | `false`                  |
-| `metrics.serviceMonitor.namespace`         | Namespace in which Prometheus is running                                                                                                  | `""`                     |
-| `metrics.serviceMonitor.interval`          | Interval at which metrics should be scraped.                                                                                              | `""`                     |
-| `metrics.serviceMonitor.scrapeTimeout`     | Timeout after which the scrape is ended                                                                                                   | `""`                     |
-| `metrics.serviceMonitor.selector`          | Prometheus instance selector labels                                                                                                       | `{}`                     |
-| `metrics.serviceMonitor.additionalLabels`  | Additional labels that can be used so PodMonitor will be discovered by Prometheus                                                         | `{}`                     |
-| `metrics.serviceMonitor.relabelings`       | RelabelConfigs to apply to samples before scraping                                                                                        | `[]`                     |
-| `metrics.serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion                                                                                 | `[]`                     |
-| `metrics.prometheusRule.enabled`           | if `true`, creates a Prometheus Operator PrometheusRule (also requires `metrics.enabled` to be `true` and `metrics.prometheusRule.rules`) | `false`                  |
-| `metrics.prometheusRule.namespace`         | Namespace for the PrometheusRule Resource (defaults to the Release Namespace)                                                             | `""`                     |
-| `metrics.prometheusRule.additionalLabels`  | Additional labels that can be used so PrometheusRule will be discovered by Prometheus                                                     | `{}`                     |
-| `metrics.prometheusRule.rules`             | Prometheus Rule definitions                                                                                                               | `[]`                     |
-
+| Name                                       | Description                                                                                                                               | Value   |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `metrics.serviceMonitor.enabled`           | Creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                                               | `false` |
+| `metrics.serviceMonitor.namespace`         | Namespace in which Prometheus is running                                                                                                  | `""`    |
+| `metrics.serviceMonitor.interval`          | Interval at which metrics should be scraped.                                                                                              | `""`    |
+| `metrics.serviceMonitor.scrapeTimeout`     | Timeout after which the scrape is ended                                                                                                   | `""`    |
+| `metrics.serviceMonitor.selector`          | Prometheus instance selector labels                                                                                                       | `{}`    |
+| `metrics.serviceMonitor.additionalLabels`  | Additional labels that can be used so PodMonitor will be discovered by Prometheus                                                         | `{}`    |
+| `metrics.serviceMonitor.relabelings`       | RelabelConfigs to apply to samples before scraping                                                                                        | `[]`    |
+| `metrics.serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion                                                                                 | `[]`    |
+| `metrics.prometheusRule.enabled`           | if `true`, creates a Prometheus Operator PrometheusRule (also requires `metrics.enabled` to be `true` and `metrics.prometheusRule.rules`) | `false` |
+| `metrics.prometheusRule.namespace`         | Namespace for the PrometheusRule Resource (defaults to the Release Namespace)                                                             | `""`    |
+| `metrics.prometheusRule.additionalLabels`  | Additional labels that can be used so PrometheusRule will be discovered by Prometheus                                                     | `{}`    |
+| `metrics.prometheusRule.rules`             | Prometheus Rule definitions                                                                                                               | `[]`    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
